@@ -70,3 +70,33 @@ export async function getDbUserId() {
 
   return user.id;
 }
+
+// Get Random users for "Who to Follow" feature except the current user and users already followed
+export async function getRandomUser() {
+  const userId = await getDbUserId();
+  if (!userId) return [];
+  return await prisma.user.findMany({
+    // where: {
+    //   AND: [
+    //     {
+    //       id: { not: userId },
+    //     },
+    //     {
+    //       followers: {
+    //         none: {
+    //           followerId: userId,
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+
+    include: {
+      _count: {
+        select: {
+          followers: true,
+        },
+      },
+    },
+  });
+}
