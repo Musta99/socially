@@ -9,7 +9,7 @@ import { currentUser } from "@clerk/nextjs/server";
 async function DesktopNavbar() {
   const user = await currentUser();
   return (
-    <div className="flex items-center space-x-4">
+    <div className="hidden md:flex items-center space-x-4">
       <MoodToggle />
 
       <Button variant="ghost" className="flex items-center gap-2" asChild>
