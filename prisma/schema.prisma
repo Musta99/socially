@@ -5,13 +5,20 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
+ 
+  
 }
 
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 
@@ -32,8 +39,8 @@ model User {
   comments       Comment[]
   likes          Like[]
 
-  followers      Follower[] @relation("followers")
-  following      Follower[] @relation("following")
+  followers      Follows[] @relation("followers")
+  following      Follows[] @relation("following")
 
   notifications  Notification[]  @relation("notificationReceived")
   notificationCreated Notification[] @relation("notificationCreated")
@@ -54,3 +61,75 @@ model Post {
   likes       Like[]
   notification Notification[] 
 }
+
+// Comment model
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  String
+  postId    String  
+  
+
+  // Relations
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  notifications Notification[]
+
+  @@index([authorId,postId]) // composite index for faster queries
+}
+
+// Like model
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  userId  String
+  postId    String  
+  // Relations
+  author    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade) 
+
+  @@unique([userId, postId]) // to ensure a user can like a post only once
+  @@index([userId,postId]) // composite index for faster queries
+}
+
+// Follows model
+model Follows {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())    
+
+  // Relations
+  followers    User     @relation("followers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade) 
+  @@unique([followerId, followingId]) // to ensure a user can follow another user only once
+  @@index([followerId, followingId]) // composite index for faster queries
+}
+
+// Notification model
+model Notification {
+  id              String   @id @default(cuid())
+  type            NotificationType
+  createdAt       DateTime @default(now())  
+  isRead          Boolean  @default(false)
+  receiverId      String
+  creatorId       String?
+  postId          String?
+  commentId       String?
+  // Relations
+  receiver        User     @relation("notificationReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+  creator         User?    @relation("notificationCreated", fields: [creatorId], references: [id], onDelete: Cascade)
+  post            Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comments        Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade) 
+
+  @@index([receiverId, isRead]) // index to quickly fetch unread notifications for a user
+}
+
+enum NotificationType {
+  LIKE
+  COMMENT
+  FOLLOW
+}
+    
