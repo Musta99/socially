@@ -8,7 +8,6 @@ import { syncUser } from "@/actions/user.action";
 async function Navbar() {
   const user = await currentUser();
   if (user) {
-    console.log("Navbar User:", user);
     await syncUser();
   }
   return (

@@ -58,3 +58,15 @@ export async function getUserByClerkId(clerkId: string) {
     console.error("Error fetching user by Clerk ID:", error);
   }
 }
+
+// Get user id from your database by username
+export async function getDbUserId() {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) return null;
+
+  const user = await getUserByClerkId(clerkId);
+
+  if (!user) throw new Error("User not found");
+
+  return user.id;
+}
