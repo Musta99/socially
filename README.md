@@ -50,29 +50,31 @@ Leverages the App Router architecture, Server Actions, Incremental Static Regene
 
 ## 🧩 Project Structure
 
+```bash
 socially/
 ├── src/
-│ ├── app/ # Next.js App Router pages
-│ ├── components/ # Reusable UI components
-│ ├── lib/ # Utilities and helpers
-│ ├── prisma/ # Prisma schema and client
-│ └── styles/ # Global styles
-├── public/ # Static assets
-├── prisma/ # Database schema and migrations
-├── .env.local # Environment variables
-└── package.json
+│   ├── app/               # Next.js App Router pages and API routes
+│   ├── components/        # Reusable UI components
+│   ├── lib/               # Utility functions and helpers
+│   ├── prisma/            # Prisma schema and generated client
+│   └── styles/            # Global stylesheets
+├── public/                # Static assets (images, fonts, etc.)
+├── prisma/                # Prisma database migrations
+├── .env.local             # Environment variables for local development
+└── package.json           # Project dependencies and scripts
 
 ## ⚙️ Getting Started (Local Development)
 
 1️⃣ Clone the repository
 
-```bash
 git clone https://github.com/yourusername/socially.git
 cd socially
 
 2️⃣ Install dependencies
 npm install
+
 # or
+
 yarn install
 
 3️⃣ Set up environment variables
@@ -93,12 +95,14 @@ npm run dev
 Then open http://localhost:3000 to see it live.
 
 ## Future Enhancements
+
 🔔 Real-time notifications
 💬 Direct messaging
 🧑‍🤝‍🧑 Group chats and communities
 📱 Mobile-first PWA version
 
 ## 🤝 Contributing
+
 Contributions are welcome!
 If you’d like to improve Socially, please fork the repo and open a pull request.
 Fork the repository
@@ -108,9 +112,16 @@ Push to the branch: git push origin feature/amazing-feature
 Open a Pull Request
 
 ## 🧑‍💻 Author
+
 Developed by Mustafizur Rahman
 Built with ❤️ using Next.js, Prisma, and Clerk
 
 ## 🪩 License
+
 This project is licensed under the MIT License — feel free to use and modify it.
+
+```
+
+```
+
 ```
