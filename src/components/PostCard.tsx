@@ -14,7 +14,8 @@ import { Textarea } from "./ui/textarea";
 import DeleteAlertDialog from "./DeleteAlertDialog";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { getPosts } from "@/actions/post.action";
+import { getPosts, toggleLike } from "@/actions/post.action";
+import toast from "react-hot-toast";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>;
 type Post = Posts[number];
@@ -22,15 +23,31 @@ type Post = Posts[number];
 function PostCard({ post, dbUserId }: { post: Post; dbUserId: string | null }) {
   const { user } = useUser();
   const [isDeleting, setIsDeleting] = React.useState(false);
+  const [isLiking, setIsLiking] = React.useState(false);
   const [hasLiked, setHasLiked] = React.useState(false);
   const [optimisticLikes, setOptimisticLikes] = React.useState(0);
   const [showComments, setShowComments] = React.useState(false);
   const [newComment, setNewComment] = React.useState("");
   const [isCommenting, setIsCommenting] = React.useState(false);
 
-  const handleLike = () => {};
+  const handleLike = async() => {
+    if (isLiking) return;
+    try {
+      setIsLiking(true);
+      setHasLiked((prev) => !prev);
+      setOptimisticLikes((prev) => prev + (hasLiked ? -1 : 1));
+      await toggleLike(post.id);
+    } catch (error) {
+      setOptimisticLikes(post._count.likes);
+      setHasLiked(post.likes.some((like) => like.userId === dbUserId));
+    } finally {
+      setIsLiking(false);
+    }
+  };
   const handleDeletePost = () => {};
-  const handleAddComment = () => {};
+
+
+
 
   return (
     <Card className="overflow-hidden">
