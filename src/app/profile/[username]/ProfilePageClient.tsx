@@ -60,8 +60,6 @@ function ProfilePageClient({
   const [editForm, setEditForm] = useState({
     name: user.name || "",
     bio: user.bio || "",
-    location: user.location || "",
-    website: user.website || "",
   });
 
   const handleEditSubmit = async () => {
@@ -105,7 +103,7 @@ function ProfilePageClient({
             <CardContent className="pt-6">
               <div className="flex flex-col items-center text-center">
                 <Avatar className="w-24 h-24">
-                  <AvatarImage src={user.image ?? "/avatar.png"} />
+                  <AvatarImage src={user.avatarUrl ?? "/avatar.png"} />
                 </Avatar>
                 <h1 className="mt-4 text-2xl font-bold">
                   {user.name ?? user.username}
@@ -169,29 +167,22 @@ function ProfilePageClient({
 
                 {/* LOCATION & WEBSITE */}
                 <div className="w-full mt-6 space-y-2 text-sm">
-                  {user.location && (
+                  {
                     <div className="flex items-center text-muted-foreground">
                       <MapPinIcon className="size-4 mr-2" />
-                      {user.location}
                     </div>
-                  )}
-                  {user.website && (
+                  }
+                  {
                     <div className="flex items-center text-muted-foreground">
                       <LinkIcon className="size-4 mr-2" />
                       <a
-                        href={
-                          user.website.startsWith("http")
-                            ? user.website
-                            : `https://${user.website}`
-                        }
+                        href={`https://facebook.com`}
                         className="hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"
-                      >
-                        {user.website}
-                      </a>
+                      ></a>
                     </div>
-                  )}
+                  }
                   <div className="flex items-center text-muted-foreground">
                     <CalendarIcon className="size-4 mr-2" />
                     Joined {formattedDate}
@@ -282,25 +273,11 @@ function ProfilePageClient({
               </div>
               <div className="space-y-2">
                 <Label>Location</Label>
-                <Input
-                  name="location"
-                  value={editForm.location}
-                  onChange={(e: any) =>
-                    setEditForm({ ...editForm, location: e.target.value })
-                  }
-                  placeholder="Where are you based?"
-                />
+                <Input name="location" placeholder="Where are you based?" />
               </div>
               <div className="space-y-2">
                 <Label>Website</Label>
-                <Input
-                  name="website"
-                  value={editForm.website}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, website: e.target.value })
-                  }
-                  placeholder="Your personal website"
-                />
+                <Input name="website" placeholder="Your personal website" />
               </div>
             </div>
             <div className="flex justify-end gap-3">
