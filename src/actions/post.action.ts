@@ -195,3 +195,35 @@ export async function createComment(postId: string, content: string) {
     return { success: false, error: "Failed to create comment" };
   }
 }
+
+// Delet a post
+export async function deletePost(postId: string) {
+  try {
+    const userId = await getDbUserId();
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      select: {
+        authorId: true,
+      },
+    });
+
+    if (!post) throw new Error("No Post found in that id");
+    if (post.authorId !== userId)
+      throw new Error("You are not authorized to do this action");
+
+    await prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+
+    revalidatePath("/");
+    return { success: true };
+  } catch (error) {
+    console.log("Error occured", error);
+    return { success: false, error: "Failed to do this action" };
+  }
+}

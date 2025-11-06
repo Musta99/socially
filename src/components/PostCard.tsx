@@ -14,7 +14,12 @@ import { Textarea } from "./ui/textarea";
 import DeleteAlertDialog from "./DeleteAlertDialog";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { createComment, getPosts, toggleLike } from "@/actions/post.action";
+import {
+  createComment,
+  deletePost,
+  getPosts,
+  toggleLike,
+} from "@/actions/post.action";
 import toast from "react-hot-toast";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>;
@@ -30,7 +35,7 @@ function PostCard({ post, dbUserId }: { post: Post; dbUserId: string | null }) {
   const [newComment, setNewComment] = React.useState("");
   const [isCommenting, setIsCommenting] = React.useState(false);
 
-  const handleLike = async() => {
+  const handleLike = async () => {
     if (isLiking) return;
     try {
       setIsLiking(true);
@@ -44,8 +49,20 @@ function PostCard({ post, dbUserId }: { post: Post; dbUserId: string | null }) {
       setIsLiking(false);
     }
   };
-  const handleDeletePost = () => {};
-
+  const handleDeletePost = async () => {
+    if (isDeleting) return;
+    try {
+      setIsDeleting(true);
+      const result = await deletePost(post.id);
+      if (result?.success) {
+        toast.success("sucessfully deleted the post");
+      }
+    } catch (error) {
+      toast.error("Failed to delete post");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const handleAddComment = async () => {
     if (!newComment.trim() || isCommenting) return;
