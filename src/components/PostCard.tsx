@@ -14,7 +14,7 @@ import { Textarea } from "./ui/textarea";
 import DeleteAlertDialog from "./DeleteAlertDialog";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { getPosts, toggleLike } from "@/actions/post.action";
+import { createComment, getPosts, toggleLike } from "@/actions/post.action";
 import toast from "react-hot-toast";
 
 type Posts = Awaited<ReturnType<typeof getPosts>>;
@@ -47,7 +47,21 @@ function PostCard({ post, dbUserId }: { post: Post; dbUserId: string | null }) {
   const handleDeletePost = () => {};
 
 
-
+  const handleAddComment = async () => {
+    if (!newComment.trim() || isCommenting) return;
+    try {
+      setIsCommenting(true);
+      const result = await createComment(post.id, newComment);
+      if (result?.success) {
+        toast.success("Comment posted successfully");
+        setNewComment("");
+      }
+    } catch (error) {
+      toast.error("Failed to add comment");
+    } finally {
+      setIsCommenting(false);
+    }
+  };
 
   return (
     <Card className="overflow-hidden">
