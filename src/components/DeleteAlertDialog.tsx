@@ -3,12 +3,19 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Button } from './ui/button'
 import { Loader2Icon, Trash2Icon } from 'lucide-react'
 
-function DeleteAlertDialog() {
+interface DeleteAlertDialogProps {
+  isDeleting: boolean;
+  onDelete: any;
+  title?: string;
+  description?: string;
+}
 
-    const title = "Delete Post"
-    const description = "Are you sure you want to delete this post? This action cannot be undone."
-    const isDeleting = false;
-    const onDelete = () => {}
+function DeleteAlertDialog({
+  isDeleting,
+  onDelete,
+  title = "Delete Post",
+  description = "This action cannot be undone.",}: DeleteAlertDialogProps) {
+
   return (
         <AlertDialog>
       <AlertDialogTrigger asChild>
